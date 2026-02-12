@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Sponsor {
+  id                String         @id @default(uuid())
+  nome              String
+  empresa           String
+  whatsapp          String
+  areas_contratadas String[]
+  data_limite       DateTime
+  avisou_time       Boolean        @default(false)
+  entrevistados     Entrevistado[]
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @updatedAt
+
+  @@map("sponsors")
+}
+
+model Entrevistado {
+  id                   String    @id @default(uuid())
+  sponsor_id           String
+  sponsor              Sponsor   @relation(fields: [sponsor_id], references: [id], onDelete: Cascade)
+
+  nome                 String
+  cargo                String
+  area                 String
+  whatsapp             String    @unique
+
+  status               String    @default("nao_iniciado")
+  secao_atual          Int       @default(1)
+  secoes_completadas   Int[]     @default([])
+
+  respostas            Json      @default("{}")
+
+  iniciado_em          DateTime?
+  concluido_em         DateTime?
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @updatedAt
+
+  @@map("entrevistados")
+  @@index([sponsor_id])
+  @@index([status])
+}
