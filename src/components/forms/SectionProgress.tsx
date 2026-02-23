@@ -15,18 +15,18 @@ export function SectionProgress({ current, total = 5 }: SectionProgressProps) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-700">{sectionTitles[current]}</span>
-        <span className="text-sm text-gray-500">
-          {current} de {total}
+        <span className="dl-eyebrow" style={{ color: "hsl(var(--color-dl-text))" }}>
+          {sectionTitles[current]}
+        </span>
+        <span className="dl-eyebrow">
+          {current}/{total}
         </span>
       </div>
       <div className="flex gap-1">
         {Array.from({ length: total }, (_, i) => (
           <div
             key={i}
-            className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-              i + 1 <= current ? "bg-blue-600" : "bg-gray-200"
-            }`}
+            className={`dl-progress-segment${i + 1 <= current ? " active" : ""}`}
           />
         ))}
       </div>

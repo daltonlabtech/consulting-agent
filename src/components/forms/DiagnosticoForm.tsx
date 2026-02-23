@@ -24,15 +24,13 @@ function FieldWithAudio({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="space-y-2">
-      <label className="block text-base font-medium text-gray-800 leading-snug">
-        {label}
-      </label>
+    <div className="dl-card p-4 space-y-3">
+      <label className="dl-label">{label}</label>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={4}
-        className="w-full rounded-lg border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+        className="dl-input"
       />
       <div className="flex justify-end">
         <AudioRecorder
@@ -56,6 +54,10 @@ export function DiagnosticoForm({
   initialSection,
   initialRespostas,
 }: DiagnosticoFormProps) {
+  const primeiroNome = entrevistadoNome.split(" ")[0];
+  const isFirstAccess = initialSection === 1 && Object.keys(initialRespostas).length === 0;
+
+  const [showWelcome, setShowWelcome] = useState(isFirstAccess);
   const [currentSection, setCurrentSection] = useState(initialSection);
   const [respostas, setRespostas] = useState<Respostas>(initialRespostas);
   const [isSaving, setIsSaving] = useState(false);
@@ -167,18 +169,112 @@ export function DiagnosticoForm({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentSection]);
 
+  /* ── Welcome screen ────────────────────────────────────────────── */
+  if (showWelcome) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center px-4 py-12"
+        style={{ backgroundColor: "hsl(var(--color-dl-bg))" }}
+      >
+        <div className="w-full max-w-lg dl-card overflow-hidden">
+          {/* Gradient top bar */}
+          <div
+            style={{
+              height: 4,
+              background: "linear-gradient(90deg, hsl(var(--color-dl-primary)), hsl(var(--color-dl-accent)))",
+            }}
+          />
+
+          <div className="px-8 py-10 space-y-8">
+            {/* Branding */}
+            <div className="dl-fade-up-1 flex items-center gap-2">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(135deg, hsl(var(--color-dl-primary)), hsl(var(--color-dl-accent)))",
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <span className="dl-eyebrow" style={{ color: "hsl(var(--color-dl-muted))" }}>
+                Dalton Lab
+              </span>
+            </div>
+
+            {/* Greeting */}
+            <div className="dl-fade-up-2 space-y-1">
+              <h1
+                className="text-3xl font-bold tracking-tight leading-tight"
+                style={{ fontFamily: "var(--font-display)", color: "hsl(var(--color-dl-text))" }}
+              >
+                Olá, {primeiroNome}!
+              </h1>
+              <p
+                className="text-base font-semibold tracking-tight"
+                style={{ fontFamily: "var(--font-display)", color: "hsl(var(--color-dl-primary))" }}
+              >
+                Diagnóstico de Transformação Agêntica
+              </p>
+            </div>
+
+            {/* Description */}
+            <p
+              className="dl-fade-up-3 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Vamos entender como a sua área funciona hoje — seus processos, ferramentas e desafios do dia a dia — para identificar onde a inteligência artificial pode gerar mais impacto e acelerar a transformação da sua empresa.
+            </p>
+
+            {/* Info pills */}
+            <div className="dl-fade-up-4 flex flex-wrap gap-2">
+              {["5 seções", "~10 perguntas", "Texto ou áudio"].map((label) => (
+                <span key={label} className="dl-pill">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full inline-block"
+                    style={{ backgroundColor: "hsl(var(--color-dl-primary))" }}
+                  />
+                  {label}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <button
+              type="button"
+              onClick={() => setShowWelcome(false)}
+              className="dl-fade-up-5 dl-btn-primary w-full"
+            >
+              Iniciar Diagnóstico
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Completion screen ─────────────────────────────────────────── */
   if (isCompleted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
+      <div
+        className="min-h-screen flex items-center justify-center px-6"
+        style={{ backgroundColor: "hsl(var(--color-dl-bg))" }}
+      >
         <div className="text-center max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            style={{ backgroundColor: "hsl(var(--color-dl-success) / 0.12)" }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#16a34a"
+              stroke="#22c55e"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -186,10 +282,13 @@ export function DiagnosticoForm({
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1
+            className="text-2xl font-bold mb-2"
+            style={{ fontFamily: "var(--font-display)", color: "hsl(var(--color-dl-text))" }}
+          >
             Obrigado, {entrevistadoNome}!
           </h1>
-          <p className="text-gray-600 text-base">
+          <p style={{ color: "hsl(var(--color-dl-muted))", fontSize: "1rem" }}>
             Suas respostas foram registradas com sucesso.
           </p>
         </div>
@@ -197,21 +296,27 @@ export function DiagnosticoForm({
     );
   }
 
+  /* ── Main form ─────────────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
+    <div className="min-h-screen" style={{ backgroundColor: "hsl(var(--color-dl-bg))" }}>
+      {/* Sticky header */}
+      <div className="dl-bar border-b px-4 py-4 sticky top-0 z-10" style={{ borderColor: "hsl(var(--color-dl-border))" }}>
         <div className="max-w-lg mx-auto space-y-3">
           <div>
-            <p className="text-sm text-gray-500">{empresaNome}</p>
-            <p className="text-base font-semibold text-gray-800">{entrevistadoNome}</p>
+            <p className="dl-eyebrow">{empresaNome}</p>
+            <p
+              className="text-sm font-semibold"
+              style={{ fontFamily: "var(--font-display)", color: "hsl(var(--color-dl-text))" }}
+            >
+              {entrevistadoNome}
+            </p>
           </div>
           <SectionProgress current={currentSection} />
         </div>
       </div>
 
-      {/* Form */}
-      <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      {/* Form content */}
+      <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
         {currentSection === 1 && (
           <>
             <FieldWithAudio
@@ -260,14 +365,14 @@ export function DiagnosticoForm({
               onChange={(v) => updateS3("p7_tempo_ferramentas", v)}
             />
             {showPlanilhas && (
-              <div className="space-y-2">
-                <label className="block text-base font-medium text-gray-800 leading-snug">
+              <div className="dl-card p-4 space-y-3">
+                <label className="dl-label">
                   Especificamente com planilhas, quanto tempo por semana?
                 </label>
                 <select
                   value={s3.p8a_tempo_planilhas ?? ""}
                   onChange={(e) => updateS3("p8a_tempo_planilhas", e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  className="dl-input"
                 >
                   <option value="">Selecione...</option>
                   {OPTIONS_TEMPO_PLANILHAS.map((o) => (
@@ -288,20 +393,16 @@ export function DiagnosticoForm({
 
         {currentSection === 4 && (
           <>
-            {/* p9_usa_ia - radio */}
-            <div className="space-y-3">
-              <label className="block text-base font-medium text-gray-800">
+            {/* p9_usa_ia — radio */}
+            <div className="dl-card p-4 space-y-3">
+              <label className="dl-label">
                 A sua área já usa alguma ferramenta de IA?
               </label>
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 {(["Sim", "Não"] as const).map((opt) => (
                   <label
                     key={opt}
-                    className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-colors ${
-                      s4.p9_usa_ia === opt
-                        ? "border-blue-600 bg-blue-50 text-blue-700 font-medium"
-                        : "border-gray-200 text-gray-700 hover:border-gray-300"
-                    }`}
+                    className={`dl-option-card flex-1 justify-center${s4.p9_usa_ia === opt ? " selected" : ""}`}
                   >
                     <input
                       type="radio"
@@ -311,7 +412,7 @@ export function DiagnosticoForm({
                       onChange={() => updateS4("p9_usa_ia", opt)}
                       className="sr-only"
                     />
-                    {opt}
+                    <span className="text-sm font-medium">{opt}</span>
                   </label>
                 ))}
               </div>
@@ -319,9 +420,9 @@ export function DiagnosticoForm({
 
             {s4.p9_usa_ia === "Sim" && (
               <>
-                {/* p10a - multi-select checkboxes */}
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-800">
+                {/* p10a — multi-select checkboxes */}
+                <div className="dl-card p-4 space-y-3">
+                  <label className="dl-label">
                     Qual(is) ferramenta(s) de IA vocês usam?
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -330,11 +431,7 @@ export function DiagnosticoForm({
                       return (
                         <label
                           key={tool}
-                          className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-colors ${
-                            selected
-                              ? "border-blue-600 bg-blue-50 text-blue-700"
-                              : "border-gray-200 text-gray-700 hover:border-gray-300"
-                          }`}
+                          className={`dl-option-card${selected ? " selected" : ""}`}
                         >
                           <input
                             type="checkbox"
@@ -348,11 +445,7 @@ export function DiagnosticoForm({
                             }}
                             className="sr-only"
                           />
-                          <span
-                            className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
-                              selected ? "border-blue-600 bg-blue-600" : "border-gray-300"
-                            }`}
-                          >
+                          <span className={`dl-check-indicator${selected ? " checked" : ""}`}>
                             {selected && (
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -386,16 +479,14 @@ export function DiagnosticoForm({
 
             {s4.p9_usa_ia === "Não" && (
               <>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-800">
-                    Por que ainda não?
-                  </label>
+                <div className="dl-card p-4 space-y-3">
+                  <label className="dl-label">Por que ainda não?</label>
                   <select
                     value={s4.p11_por_que_nao ?? ""}
                     onChange={(e) =>
                       updateS4("p11_por_que_nao", e.target.value as NonNullable<Respostas["secao_4"]>["p11_por_que_nao"])
                     }
-                    className="w-full rounded-lg border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="dl-input"
                   >
                     <option value="">Selecione...</option>
                     {OPTIONS_POR_QUE_NAO.map((o) => (
@@ -405,15 +496,13 @@ export function DiagnosticoForm({
                 </div>
 
                 {s4.p11_por_que_nao === "Outro" && (
-                  <div className="space-y-2">
-                    <label className="block text-base font-medium text-gray-800">
-                      Especifique:
-                    </label>
+                  <div className="dl-card p-4 space-y-3">
+                    <label className="dl-label">Especifique:</label>
                     <textarea
                       value={s4.p11_outro ?? ""}
                       onChange={(e) => updateS4("p11_outro", e.target.value)}
                       rows={3}
-                      className="w-full rounded-lg border border-gray-300 p-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      className="dl-input"
                     />
                   </div>
                 )}
@@ -438,11 +527,14 @@ export function DiagnosticoForm({
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 px-4 py-4">
+      {/* Sticky footer navigation */}
+      <div
+        className="dl-bar border-t px-4 py-4 sticky bottom-0 z-10"
+        style={{ borderColor: "hsl(var(--color-dl-border))" }}
+      >
         <div className="max-w-lg mx-auto space-y-3">
           {saveError && (
-            <p className="text-sm text-red-600 text-center">{saveError}</p>
+            <p className="dl-error text-center">{saveError}</p>
           )}
           <div className="flex gap-3">
             {currentSection > 1 && (
@@ -450,7 +542,7 @@ export function DiagnosticoForm({
                 type="button"
                 onClick={() => setCurrentSection((s) => s - 1)}
                 disabled={isSaving}
-                className="flex-1 py-3 rounded-lg border border-gray-300 text-gray-700 font-medium text-base hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                className="dl-btn-ghost flex-1"
               >
                 Voltar
               </button>
@@ -463,7 +555,7 @@ export function DiagnosticoForm({
                   : save({ advance: true })
               }
               disabled={!isSectionValid() || isSaving}
-              className="flex-1 py-3 rounded-lg bg-blue-600 text-white font-medium text-base hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="dl-btn-primary flex-1"
             >
               {isSaving
                 ? "Salvando..."
@@ -477,7 +569,7 @@ export function DiagnosticoForm({
             type="button"
             onClick={() => save({ continuar: true })}
             disabled={isSaving}
-            className="w-full py-2 text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50 transition-colors"
+            className="dl-link-muted"
           >
             Continuar depois
           </button>
@@ -486,7 +578,7 @@ export function DiagnosticoForm({
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-4 right-4 max-w-lg mx-auto bg-gray-800 text-white text-sm px-4 py-3 rounded-lg shadow-lg z-50 text-center">
+        <div className="dl-toast">
           {toast}
         </div>
       )}

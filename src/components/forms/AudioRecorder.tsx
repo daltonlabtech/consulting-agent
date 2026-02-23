@@ -80,7 +80,10 @@ export function AudioRecorder({ onTranscript }: AudioRecorderProps) {
 
   if (state === "transcribing") {
     return (
-      <span className="text-xs text-gray-500 flex items-center gap-1">
+      <span
+        className="dl-eyebrow flex items-center gap-1.5"
+        style={{ color: "hsl(var(--color-dl-primary))" }}
+      >
         <svg
           className="animate-spin h-3 w-3"
           xmlns="http://www.w3.org/2000/svg"
@@ -112,11 +115,37 @@ export function AudioRecorder({ onTranscript }: AudioRecorderProps) {
         type="button"
         onClick={state === "recording" ? stopRecording : startRecording}
         title={state === "recording" ? "Parar gravação" : "Gravar resposta por áudio"}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-          state === "recording"
-            ? "bg-red-500 text-white animate-pulse"
-            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all${
+          state === "recording" ? " dl-pulse-red" : ""
         }`}
+        style={
+          state === "recording"
+            ? {
+                backgroundColor: "hsl(var(--color-dl-error))",
+                color: "#ffffff",
+              }
+            : {
+                backgroundColor: "transparent",
+                border: "1px solid hsl(var(--color-dl-border))",
+                color: "hsl(var(--color-dl-muted))",
+              }
+        }
+        onMouseEnter={(e) => {
+          if (state === "idle") {
+            (e.currentTarget as HTMLButtonElement).style.color =
+              "hsl(var(--color-dl-primary))";
+            (e.currentTarget as HTMLButtonElement).style.borderColor =
+              "hsl(var(--color-dl-primary))";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (state === "idle") {
+            (e.currentTarget as HTMLButtonElement).style.color =
+              "hsl(var(--color-dl-muted))";
+            (e.currentTarget as HTMLButtonElement).style.borderColor =
+              "hsl(var(--color-dl-border))";
+          }
+        }}
       >
         {state === "recording" ? (
           <>
@@ -153,7 +182,7 @@ export function AudioRecorder({ onTranscript }: AudioRecorderProps) {
           </>
         )}
       </button>
-      {error && <span className="text-xs text-red-500">{error}</span>}
+      {error && <span className="dl-error">{error}</span>}
     </div>
   );
 }
