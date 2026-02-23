@@ -31,7 +31,7 @@ export const sponsorFormSchema = z.object({
 export const respostasUpdateSchema = z.object({
   entrevistado_id: z.string().uuid(),
   secao: z.number().min(1).max(5),
-  respostas: z.record(z.unknown()),
+  respostas: z.record(z.string(), z.unknown()),
 });
 
 export type SponsorFormData = z.infer<typeof sponsorFormSchema>;
