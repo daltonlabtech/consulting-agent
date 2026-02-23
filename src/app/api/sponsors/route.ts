@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
-        { success: false, errors: error.errors },
+        { success: false, errors: error.issues },
         { status: 400 }
       );
     }
