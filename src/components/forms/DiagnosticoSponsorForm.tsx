@@ -49,19 +49,29 @@ const INTEGRATION_SCORE_LABELS: Record<number, string> = {
 
 // ─── Reusable components ──────────────────────────────────────────────────────
 
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 function FieldWithAudio({
   label,
   hint,
   value,
   onChange,
   rows = 4,
+  minWords = 30,
 }: {
   label: string;
   hint?: string;
   value: string;
   onChange: (v: string) => void;
   rows?: number;
+  minWords?: number;
 }) {
+  const wc = countWords(value);
+  const pct = Math.min(100, (wc / minWords) * 100);
+  const met = wc >= minWords;
+
   return (
     <div className="dl-card p-4 space-y-3">
       <label className="dl-label">{label}</label>
@@ -73,6 +83,28 @@ function FieldWithAudio({
         className="dl-input"
         placeholder="Escreva aqui ou use o microfone..."
       />
+      <div className="space-y-1">
+        <div
+          className="w-full h-1.5 rounded-full overflow-hidden"
+          style={{ backgroundColor: "hsl(var(--color-dl-border))" }}
+        >
+          <div
+            className="h-full rounded-full transition-all duration-300"
+            style={{
+              width: `${pct}%`,
+              backgroundColor: met
+                ? "hsl(var(--color-dl-success))"
+                : "hsl(var(--color-dl-accent))",
+            }}
+          />
+        </div>
+        <p
+          className="text-xs text-right"
+          style={{ color: met ? "hsl(var(--color-dl-success))" : "hsl(var(--color-dl-muted))" }}
+        >
+          {wc}/{minWords} palavras
+        </p>
+      </div>
       <div className="flex justify-end">
         <AudioRecorder
           onTranscript={(text) => onChange(value ? `${value}\n${text}` : text)}
@@ -334,13 +366,13 @@ export function DiagnosticoSponsorForm({
           responses.s1_ai_ok !== undefined
         );
       case 2:
-        return (responses.s2_main_strength ?? "").length > 0;
+        return countWords(responses.s2_main_strength ?? "") >= 30;
       case 3:
         return responses.s3_integration_score !== undefined;
       case 4:
         return responses.s4_change_openness !== undefined;
       case 5:
-        return (responses.s5_success_criteria ?? "").length > 0;
+        return countWords(responses.s5_success_criteria ?? "") >= 30;
       case 6: {
         const validPeople = people.filter(
           (p) => p.nome.trim() && p.cargo.trim() && p.area.trim() && p.whatsapp.trim()

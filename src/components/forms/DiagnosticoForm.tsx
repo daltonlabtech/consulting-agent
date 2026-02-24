@@ -14,15 +14,25 @@ interface DiagnosticoFormProps {
 }
 
 // Reusable textarea + audio field
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 function FieldWithAudio({
   label,
   value,
   onChange,
+  minWords = 30,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  minWords?: number;
 }) {
+  const wc = countWords(value);
+  const pct = Math.min(100, (wc / minWords) * 100);
+  const met = wc >= minWords;
+
   return (
     <div className="dl-card p-4 space-y-3">
       <label className="dl-label">{label}</label>
@@ -31,7 +41,30 @@ function FieldWithAudio({
         onChange={(e) => onChange(e.target.value)}
         rows={4}
         className="dl-input"
+        placeholder="Escreva aqui ou use o microfone..."
       />
+      <div className="space-y-1">
+        <div
+          className="w-full h-1.5 rounded-full overflow-hidden"
+          style={{ backgroundColor: "hsl(var(--color-dl-border))" }}
+        >
+          <div
+            className="h-full rounded-full transition-all duration-300"
+            style={{
+              width: `${pct}%`,
+              backgroundColor: met
+                ? "hsl(var(--color-dl-success))"
+                : "hsl(var(--color-dl-accent))",
+            }}
+          />
+        </div>
+        <p
+          className="text-xs text-right"
+          style={{ color: met ? "hsl(var(--color-dl-success))" : "hsl(var(--color-dl-muted))" }}
+        >
+          {wc}/{minWords} palavras
+        </p>
+      </div>
       <div className="flex justify-end">
         <AudioRecorder
           onTranscript={(text) =>
@@ -103,23 +136,27 @@ export function DiagnosticoForm({
   const isSectionValid = (): boolean => {
     switch (currentSection) {
       case 1:
-        return !!s1.p1_fluxo_principal?.trim() && !!s1.p2_pessoas_envolvidas?.trim();
+        return (
+          countWords(s1.p1_fluxo_principal ?? "") >= 30 &&
+          countWords(s1.p2_pessoas_envolvidas ?? "") >= 30
+        );
       case 2:
         return (
-          !!s2.p3_gargalos?.trim() &&
-          !!s2.p4_impactos?.trim() &&
-          !!s2.p5_tarefas_repetitivas?.trim()
+          countWords(s2.p3_gargalos ?? "") >= 30 &&
+          countWords(s2.p4_impactos ?? "") >= 30 &&
+          countWords(s2.p5_tarefas_repetitivas ?? "") >= 30
         );
       case 3: {
-        if (!s3.p6_ferramentas?.trim() || !s3.p7_tempo_ferramentas?.trim()) return false;
+        if (countWords(s3.p6_ferramentas ?? "") < 30) return false;
+        if (countWords(s3.p7_tempo_ferramentas ?? "") < 30) return false;
         if (showPlanilhas && !s3.p8a_tempo_planilhas) return false;
-        if (showSistema && !s3.p8b_limitacoes_sistema?.trim()) return false;
+        if (showSistema && countWords(s3.p8b_limitacoes_sistema ?? "") < 30) return false;
         return true;
       }
       case 4: {
         if (!s4.p9_usa_ia) return false;
         if (s4.p9_usa_ia === "Sim") {
-          return !!(s4.p10a_ferramentas_ia?.length && s4.p10b_como_usa?.trim());
+          return !!(s4.p10a_ferramentas_ia?.length) && countWords(s4.p10b_como_usa ?? "") >= 30;
         } else {
           if (!s4.p11_por_que_nao) return false;
           if (s4.p11_por_que_nao === "Outro" && !s4.p11_outro?.trim()) return false;
@@ -127,7 +164,10 @@ export function DiagnosticoForm({
         }
       }
       case 5:
-        return !!s5.p10_metas?.trim() && !!s5.p11_cenario_ideal?.trim();
+        return (
+          countWords(s5.p10_metas ?? "") >= 30 &&
+          countWords(s5.p11_cenario_ideal ?? "") >= 30
+        );
       default:
         return false;
     }
