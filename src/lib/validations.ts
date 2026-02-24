@@ -1,13 +1,8 @@
 import { z } from "zod";
 
-const entrevistadoSchema = z.object({
-  nome: z.string().min(1, "Nome obrigatório"),
-  cargo: z.string().min(1, "Cargo obrigatório"),
-  area: z.string().min(1, "Área obrigatória"),
-  whatsapp: z.string().regex(/^\+55\d{10,11}$/, "WhatsApp inválido"),
-});
+// ─── Sponsor setup (PM internal form) ────────────────────────────────────────
 
-export const sponsorFormSchema = z.object({
+export const sponsorSetupSchema = z.object({
   empresa: z.string().min(1, "Nome da empresa é obrigatório"),
   nome_sponsor: z.string().min(1, "Nome do sponsor é obrigatório"),
   whatsapp_sponsor: z
@@ -15,18 +10,21 @@ export const sponsorFormSchema = z.object({
     .regex(/^\+55\d{10,11}$/, "WhatsApp inválido"),
   areas_contratadas: z.array(z.string()).min(1, "Selecione ao menos uma área"),
   data_limite: z.coerce.date(),
-  avisou_time: z.boolean(),
-  entrevistados: z
-    .array(entrevistadoSchema)
-    .min(3, "Mínimo 3 entrevistados")
-    .refine(
-      (entrevistados) => {
-        const whatsapps = entrevistados.map((e) => e.whatsapp);
-        return new Set(whatsapps).size === whatsapps.length;
-      },
-      { message: "WhatsApps duplicados não são permitidos" }
-    ),
+  // Briefing context for pre-filling CEO form
+  briefing_areas: z.string().optional(),
+  briefing_systems: z.string().optional(),
+  briefing_ai_usage: z.string().optional(),
 });
+
+// ─── Sponsor diagnostic form responses (CEO form, per section) ───────────────
+
+export const sponsorResponseSchema = z.object({
+  sponsor_id: z.string().uuid(),
+  section: z.number().min(1).max(6),
+  responses: z.record(z.string(), z.unknown()),
+});
+
+// ─── Entrevistado form responses (Formulário 2/3, per section) ───────────────
 
 export const respostasUpdateSchema = z.object({
   entrevistado_id: z.string().uuid(),
@@ -34,5 +32,12 @@ export const respostasUpdateSchema = z.object({
   respostas: z.record(z.string(), z.unknown()),
 });
 
-export type SponsorFormData = z.infer<typeof sponsorFormSchema>;
+// ─── Exported types ───────────────────────────────────────────────────────────
+
+export type SponsorSetupData = z.infer<typeof sponsorSetupSchema>;
+export type SponsorResponseData = z.infer<typeof sponsorResponseSchema>;
 export type RespostasUpdateData = z.infer<typeof respostasUpdateSchema>;
+
+// Legacy alias — kept for backward compatibility with existing imports
+export const sponsorFormSchema = sponsorSetupSchema;
+export type SponsorFormData = SponsorSetupData;

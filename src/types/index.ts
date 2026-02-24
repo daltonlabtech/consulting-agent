@@ -1,3 +1,5 @@
+// ─── Entrevistado form responses (Formulário 2/3) ────────────────────────────
+
 export interface Respostas {
   secao_1?: {
     p1_fluxo_principal: string;
@@ -35,3 +37,49 @@ export interface EntrevistadoInput {
   area: string;
   whatsapp: string;
 }
+
+// ─── Sponsor diagnostic form responses (Formulário 1 — CEO) ─────────────────
+
+export interface SponsorKeyPerson {
+  nome: string;
+  cargo: string;
+  area: string;
+  whatsapp: string;
+}
+
+export interface SponsorFormResponses {
+  // Section 1 — Quick validation
+  s1_areas_ok?: boolean;
+  s1_areas_correction?: string;
+  s1_systems_ok?: boolean;
+  s1_systems_correction?: string;
+  s1_ai_ok?: boolean;
+  s1_ai_correction?: string;
+
+  // Section 2 — What works well
+  s2_main_strength?: string;
+  s2_reference_process?: string;
+  s2_recent_improvement?: string;
+
+  // Section 3 — Operational depth
+  s3_integration_score?: number; // 1–5
+  s3_data_visibility?: string;
+  s3_unresolved_process?: string;
+
+  // Section 4 — Team and culture
+  s4_change_openness?: string;
+  s4_tech_champion?: string;
+  s4_people_challenges?: string[];
+
+  // Section 5 — Expectations and success criteria
+  s5_success_criteria?: string;
+  s5_concerns?: string;
+  s5_key_stakeholders?: string;
+
+  // Section 6 — Key people for diagnosis
+  s6_key_people?: SponsorKeyPerson[];
+  s6_contact_preference?: string;
+  s6_people_notes?: string;
+}
+
+export type SponsorFormStatus = "pending" | "in_progress" | "completed";

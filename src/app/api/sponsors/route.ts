@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
-import { sponsorFormSchema } from "@/lib/validations";
+import { sponsorSetupSchema } from "@/lib/validations";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const data = sponsorFormSchema.parse(body);
+    const data = sponsorSetupSchema.parse(body);
 
     const sponsor = await prisma.sponsor.create({
       data: {
@@ -15,17 +15,10 @@ export async function POST(req: NextRequest) {
         whatsapp: data.whatsapp_sponsor,
         areas_contratadas: data.areas_contratadas,
         data_limite: data.data_limite,
-        avisou_time: data.avisou_time,
-        entrevistados: {
-          create: data.entrevistados.map((e) => ({
-            nome: e.nome,
-            cargo: e.cargo,
-            area: e.area,
-            whatsapp: e.whatsapp,
-          })),
-        },
+        briefing_areas: data.briefing_areas ?? null,
+        briefing_systems: data.briefing_systems ?? null,
+        briefing_ai_usage: data.briefing_ai_usage ?? null,
       },
-      include: { entrevistados: true },
     });
 
     return NextResponse.json({ success: true, sponsor });

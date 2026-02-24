@@ -15,6 +15,18 @@ model Sponsor {
   areas_contratadas String[]
   data_limite       DateTime
   avisou_time       Boolean        @default(false)
+
+  // Briefing context — pre-filled by PM from commercial meeting
+  briefing_areas     String?
+  briefing_systems   String?
+  briefing_ai_usage  String?
+
+  // Sponsor diagnostic form — filled by CEO
+  form_status        String    @default("pending")
+  form_responses     Json      @default("{}")
+  form_started_at    DateTime?
+  form_completed_at  DateTime?
+
   entrevistados     Entrevistado[]
   created_at        DateTime       @default(now())
   updated_at        DateTime       @updatedAt
