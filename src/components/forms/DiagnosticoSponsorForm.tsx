@@ -133,7 +133,7 @@ function ValidationField({
 
       {/* Correction field */}
       {confirmed === false && (
-        <div>
+        <div className="space-y-2">
           <textarea
             value={correction ?? ""}
             onChange={(e) => onCorrectionChange(e.target.value)}
@@ -141,6 +141,13 @@ function ValidationField({
             className="dl-input"
             placeholder="O que está diferente?"
           />
+          <div className="flex justify-end">
+            <AudioRecorder
+              onTranscript={(text) =>
+                onCorrectionChange(correction ? `${correction}\n${text}` : text)
+              }
+            />
+          </div>
         </div>
       )}
     </div>
