@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { LogoutButton } from "@/components/admin/LogoutButton";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -49,7 +48,6 @@ export default async function SponsorsPage() {
               Sponsors
             </h1>
           </div>
-          <LogoutButton />
         </div>
       </header>
 

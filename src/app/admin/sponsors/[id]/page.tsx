@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { LogoutButton } from "@/components/admin/LogoutButton";
 import { AdminSponsorTabs } from "@/components/admin/AdminSponsorTabs";
 
 interface Props {
@@ -55,7 +54,6 @@ export default async function SponsorDetailPage({ params }: Props) {
               {sponsor.empresa}
             </span>
           </div>
-          <LogoutButton />
         </div>
       </header>
 
