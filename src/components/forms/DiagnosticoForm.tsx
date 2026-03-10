@@ -20,11 +20,13 @@ function countWords(text: string): number {
 
 function FieldWithAudio({
   label,
+  hint,
   value,
   onChange,
   minWords = 30,
 }: {
   label: string;
+  hint?: string;
   value: string;
   onChange: (v: string) => void;
   minWords?: number;
@@ -36,6 +38,7 @@ function FieldWithAudio({
   return (
     <div className="dl-card p-4 space-y-3">
       <label className="dl-label">{label}</label>
+      {hint && <p className="text-sm" style={{ color: "hsl(var(--color-dl-muted))" }}>{hint}</p>}
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -269,8 +272,56 @@ export function DiagnosticoForm({
               Vamos entender como a sua área funciona hoje — seus processos, ferramentas e desafios do dia a dia — para identificar onde a inteligência artificial pode gerar mais impacto e acelerar a transformação da sua empresa.
             </p>
 
+            {/* Audio highlight card */}
+            <div
+              className="dl-fade-up-4 dl-card p-5 border-l-4"
+              style={{
+                borderLeftColor: "hsl(var(--color-dl-primary))",
+                background: "linear-gradient(90deg, hsl(var(--color-dl-primary) / 0.05), transparent)",
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "hsl(var(--color-dl-primary) / 0.12)" }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="hsl(var(--color-dl-primary))"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" x2="12" y1="19" y2="22" />
+                  </svg>
+                </div>
+                <div className="space-y-1">
+                  <p
+                    className="font-semibold"
+                    style={{ color: "hsl(var(--color-dl-text))" }}
+                  >
+                    Prefira responder por áudio
+                  </p>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "hsl(var(--color-dl-muted))" }}
+                  >
+                    Falar é mais natural do que escrever. Suas respostas em áudio são transcritas
+                    automaticamente e ajudam nossos analistas a entender melhor o seu dia a dia.
+                    Não precisa ser perfeito — fale como se estivesse explicando para um colega.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Info pills */}
-            <div className="dl-fade-up-4 flex flex-wrap gap-2">
+            <div className="dl-fade-up-5 flex flex-wrap gap-2">
               {["5 seções", "~10 perguntas", "Texto ou áudio"].map((label) => (
                 <span key={label} className="dl-pill">
                   <span
@@ -286,7 +337,7 @@ export function DiagnosticoForm({
             <button
               type="button"
               onClick={() => setShowWelcome(false)}
-              className="dl-fade-up-5 dl-btn-primary w-full"
+              className="dl-fade-up-6 dl-btn-primary w-full"
             >
               Iniciar Diagnóstico
             </button>
@@ -359,8 +410,17 @@ export function DiagnosticoForm({
       <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
         {currentSection === 1 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              {primeiroNome}, vamos começar entendendo como é o seu dia a dia. Queremos saber como funciona o trabalho na prática — desde quando você recebe uma demanda até entregar.
+            </div>
+
             <FieldWithAudio
-              label="Como funciona o fluxo principal do seu trabalho? Descreva desde o início até a entrega."
+              label={`${primeiroNome}, como funciona o fluxo principal do seu trabalho? Descreva desde o início até a entrega.`}
+              hint="Pense em um exemplo concreto: quando você recebe uma demanda, quais são os passos até entregar? Quem mais está envolvido?"
               value={s1.p1_fluxo_principal ?? ""}
               onChange={(v) => updateS1("p1_fluxo_principal", v)}
             />
@@ -374,8 +434,17 @@ export function DiagnosticoForm({
 
         {currentSection === 2 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Agora {primeiroNome}, queremos entender os desafios que você enfrenta. Não existe resposta certa ou errada — estamos buscando sua visão sincera sobre o que funciona bem e o que poderia melhorar.
+            </div>
+
             <FieldWithAudio
-              label="Onde estão os maiores gargalos ou atrasos no seu processo?"
+              label={`${primeiroNome}, onde estão os maiores gargalos ou atrasos no seu processo?`}
+              hint="Pense em algo que acontece com frequência e que faz você perder tempo ou se frustrar."
               value={s2.p3_gargalos ?? ""}
               onChange={(v) => updateS2("p3_gargalos", v)}
             />
@@ -394,8 +463,17 @@ export function DiagnosticoForm({
 
         {currentSection === 3 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              {primeiroNome}, as ferramentas que usamos dizem muito sobre como trabalhamos. Queremos entender quais sistemas você usa no dia a dia — o que funciona bem, o que dificulta, e onde pode haver oportunidades.
+            </div>
+
             <FieldWithAudio
-              label="Quais ferramentas/sistemas vocês usam no dia a dia?"
+              label={`${primeiroNome}, quais ferramentas/sistemas vocês usam no dia a dia?`}
+              hint="Mencione sistemas que você usa diariamente — planilhas, ERP, CRM, e-mail, WhatsApp, etc."
               value={s3.p6_ferramentas ?? ""}
               onChange={(v) => updateS3("p6_ferramentas", v)}
             />
@@ -433,6 +511,14 @@ export function DiagnosticoForm({
 
         {currentSection === 4 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Inteligência Artificial está transformando como as empresas trabalham. {primeiroNome}, queremos saber se você está usando (ou não) essas tecnologias no seu trabalho.
+            </div>
+
             {/* p9_usa_ia — radio */}
             <div className="dl-card p-4 space-y-3">
               <label className="dl-label">
@@ -553,8 +639,17 @@ export function DiagnosticoForm({
 
         {currentSection === 5 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Para finalizar, {primeiroNome}, queremos olhar para o futuro. Suas respostas aqui vão nos ajudar a entender o que seria um resultado excepcional na sua área.
+            </div>
+
             <FieldWithAudio
-              label="Quais são as principais metas da sua área nos próximos 6-12 meses?"
+              label={`${primeiroNome}, quais são as principais metas da sua área nos próximos 6-12 meses?`}
+              hint="Pode ser algo que sua área precisa entregar, melhorar ou alcançar nos próximos meses."
               value={s5.p10_metas ?? ""}
               onChange={(v) => updateS5("p10_metas", v)}
             />
