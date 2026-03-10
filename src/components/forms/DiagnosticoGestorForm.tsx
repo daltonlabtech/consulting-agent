@@ -256,8 +256,57 @@ export function DiagnosticoGestorForm({
               — para identificar onde a IA pode fazer a diferença na gestão da {empresaNome}.
             </p>
 
+            {/* Audio highlight card */}
+            <div
+              className="dl-fade-up-4 dl-card p-5 border-l-4"
+              style={{
+                borderLeftColor: "hsl(var(--color-dl-primary))",
+                background: "linear-gradient(90deg, hsl(var(--color-dl-primary) / 0.05), transparent)",
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "hsl(var(--color-dl-primary) / 0.12)" }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="hsl(var(--color-dl-primary))"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" x2="12" y1="19" y2="22" />
+                  </svg>
+                </div>
+                <div className="space-y-1">
+                  <p
+                    className="font-semibold"
+                    style={{ color: "hsl(var(--color-dl-text))" }}
+                  >
+                    Prefira responder por áudio
+                  </p>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "hsl(var(--color-dl-muted))" }}
+                  >
+                    Falar é mais natural do que escrever. Suas respostas em áudio são transcritas
+                    automaticamente e ajudam nossos analistas a capturar nuances do seu dia a dia
+                    que o texto às vezes não consegue expressar. Não precisa ser perfeito — fale
+                    como se estivesse conversando com um colega.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Info pills */}
-            <div className="dl-fade-up-4 flex flex-wrap gap-2">
+            <div className="dl-fade-up-5 flex flex-wrap gap-2">
               {["5 seções", "~10 perguntas", "Texto ou áudio"].map((label) => (
                 <span key={label} className="dl-pill">
                   <span
@@ -273,7 +322,7 @@ export function DiagnosticoGestorForm({
             <button
               type="button"
               onClick={() => setShowWelcome(false)}
-              className="dl-fade-up-5 dl-btn-primary w-full"
+              className="dl-fade-up-6 dl-btn-primary w-full"
             >
               Iniciar Diagnóstico
             </button>
@@ -350,9 +399,17 @@ export function DiagnosticoGestorForm({
         ═══════════════════════════════════════════════════════════════ */}
         {currentSection === 1 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              {primeiroNome}, vamos começar entendendo um pouco sobre a sua área. Queremos saber como o seu time se encaixa na empresa e com quem vocês mais interagem no dia a dia.
+            </div>
+
             <FieldWithAudio
-              label="1. Como você descreveria a função principal do seu time?"
-              hint="Qual é o papel da sua área dentro da empresa?"
+              label={`1. ${primeiroNome}, como você descreveria a função principal do seu time?`}
+              hint="Qual é o papel da sua área dentro da empresa? Pense no que seu time entrega para outras áreas."
               value={respostas.visao_geral ?? ""}
               onChange={(v) => updateResposta("visao_geral", v)}
             />
@@ -370,9 +427,17 @@ export function DiagnosticoGestorForm({
         ═══════════════════════════════════════════════════════════════ */}
         {currentSection === 2 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Agora {primeiroNome}, queremos entender os desafios que você enfrenta na gestão. Não existe resposta certa ou errada — estamos buscando sua visão sincera sobre o que funciona bem e o que poderia melhorar.
+            </div>
+
             <FieldWithAudio
-              label="3. Qual é o principal desafio ou problema que você enfrenta na gestão do time hoje?"
-              hint="Pense em algo que consome seu tempo ou gera frustração recorrente."
+              label={`3. ${primeiroNome}, qual é o principal desafio ou problema que você enfrenta na gestão do time hoje?`}
+              hint="Pense em algo que consome seu tempo ou gera frustração recorrente. Pode ser algo que você já tentou resolver ou que parece difícil de resolver."
               value={respostas.principal_problema ?? ""}
               onChange={(v) => updateResposta("principal_problema", v)}
             />
@@ -396,8 +461,16 @@ export function DiagnosticoGestorForm({
         ═══════════════════════════════════════════════════════════════ */}
         {currentSection === 3 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              {primeiroNome}, as ferramentas que usamos dizem muito sobre como trabalhamos. Queremos entender o ecossistema de sistemas do seu time — o que funciona bem, o que dificulta, e onde pode haver oportunidades.
+            </div>
+
             <FieldWithAudio
-              label="6. Quais sistemas e ferramentas o time usa no dia a dia?"
+              label={`6. ${primeiroNome}, quais sistemas e ferramentas o time usa no dia a dia?`}
               hint="Mencione ERP, CRM, planilhas, sistemas internos, etc."
               value={respostas.sistemas_ferramentas ?? ""}
               onChange={(v) => updateResposta("sistemas_ferramentas", v)}
@@ -426,9 +499,17 @@ export function DiagnosticoGestorForm({
         ═══════════════════════════════════════════════════════════════ */}
         {currentSection === 4 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Inteligência Artificial está transformando como as empresas trabalham. {primeiroNome}, queremos saber como você e seu time estão usando (ou não) essas tecnologias, e como enxergam o potencial delas.
+            </div>
+
             <FieldWithAudio
-              label="7. Como você está usando IA na sua área hoje?"
-              hint="Ferramentas como ChatGPT, Copilot, automações... ou ainda não usa? Como vê o potencial?"
+              label={`7. ${primeiroNome}, como você está usando IA na sua área hoje?`}
+              hint="Ferramentas como ChatGPT, Copilot, automações... ou ainda não usa? Como vê o potencial? Não se preocupe se ainda não usa — queremos saber sua visão sobre o tema."
               value={respostas.uso_ia_equipe ?? ""}
               onChange={(v) => updateResposta("uso_ia_equipe", v)}
             />
@@ -440,8 +521,16 @@ export function DiagnosticoGestorForm({
         ═══════════════════════════════════════════════════════════════ */}
         {currentSection === 5 && (
           <>
+            {/* Section intro */}
+            <div
+              className="py-4 text-base leading-relaxed"
+              style={{ color: "hsl(var(--color-dl-muted))" }}
+            >
+              Para finalizar, {primeiroNome}, queremos olhar para o futuro. Suas respostas aqui vão nos ajudar a entender o que seria um resultado excepcional para a {empresaNome} — e como a IA pode fazer parte disso.
+            </div>
+
             <FieldWithAudio
-              label="8. Quais são as principais metas do seu time para este semestre?"
+              label={`8. ${primeiroNome}, quais são as principais metas do seu time para este semestre?`}
               hint="O que precisa ser entregue ou melhorado nos próximos 6 meses?"
               value={respostas.metas_semestre ?? ""}
               onChange={(v) => updateResposta("metas_semestre", v)}
