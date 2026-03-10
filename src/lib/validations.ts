@@ -32,11 +32,24 @@ export const respostasUpdateSchema = z.object({
   respostas: z.record(z.string(), z.unknown()),
 });
 
+// ─── Entrevistado creation (with tipo) ───────────────────────────────────────
+
+export const entrevistadoCreateSchema = z.object({
+  nome: z.string().min(1, "Nome é obrigatório"),
+  email: z.string().email().optional(),
+  cargo: z.string().min(1, "Cargo é obrigatório"),
+  area: z.string().min(1, "Área é obrigatória"),
+  whatsapp: z.string().min(1, "WhatsApp é obrigatório"),
+  sponsor_id: z.string().uuid(),
+  tipo: z.enum(["gestor", "operador"]).default("operador"),
+});
+
 // ─── Exported types ───────────────────────────────────────────────────────────
 
 export type SponsorSetupData = z.infer<typeof sponsorSetupSchema>;
 export type SponsorResponseData = z.infer<typeof sponsorResponseSchema>;
 export type RespostasUpdateData = z.infer<typeof respostasUpdateSchema>;
+export type EntrevistadoCreateData = z.infer<typeof entrevistadoCreateSchema>;
 
 // Legacy alias — kept for backward compatibility with existing imports
 export const sponsorFormSchema = sponsorSetupSchema;

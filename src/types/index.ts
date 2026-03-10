@@ -29,6 +29,32 @@ export interface Respostas {
   };
 }
 
+// ─── Respostas específicas do formulário de gestores ─────────────────────────
+
+export interface RespostasGestor {
+  // Bloco 1 - Visão da Área
+  visao_geral?: string;
+  interdependencias?: string;
+
+  // Bloco 2 - Desafios de Gestão
+  principal_problema?: string;
+  impacto_pratico?: string;
+  atividade_repetitiva?: string;
+
+  // Bloco 3 - Ferramentas
+  sistemas_ferramentas?: string;
+  integracao_sistemas?: string;        // Condicional
+  tempo_planilhas?: string;            // Condicional
+
+  // Bloco 4 - IA e Inovação
+  uso_ia_equipe?: string;
+
+  // Bloco 5 - Metas e Cenário Ideal
+  metas_semestre?: string;
+  assistente_perfeito?: string;
+}
+
+export type TipoEntrevistado = "gestor" | "operador";
 export type StatusEntrevistado = "nao_iniciado" | "em_andamento" | "concluido";
 
 export interface EntrevistadoInput {

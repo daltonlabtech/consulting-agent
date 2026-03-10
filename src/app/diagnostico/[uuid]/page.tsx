@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { Respostas } from "@/types";
+import { Respostas, RespostasGestor } from "@/types";
 import { DiagnosticoForm } from "@/components/forms/DiagnosticoForm";
+import { DiagnosticoGestorForm } from "@/components/forms/DiagnosticoGestorForm";
 
 interface PageProps {
   params: Promise<{ uuid: string }>;
@@ -76,6 +77,20 @@ export default async function DiagnosticoPage({ params }: PageProps) {
     );
   }
 
+  // Render form based on tipo
+  if (entrevistado.tipo === "gestor") {
+    return (
+      <DiagnosticoGestorForm
+        entrevistadoId={entrevistado.id}
+        entrevistadoNome={entrevistado.nome}
+        empresaNome={entrevistado.sponsor.empresa}
+        initialSection={entrevistado.secao_atual}
+        initialRespostas={entrevistado.respostas as RespostasGestor}
+      />
+    );
+  }
+
+  // Default to operador form
   return (
     <DiagnosticoForm
       entrevistadoId={entrevistado.id}
