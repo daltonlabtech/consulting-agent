@@ -1,16 +1,19 @@
 interface SectionProgressProps {
   current: number;
   total?: number;
+  titles?: Record<number, string>;
 }
 
-export function SectionProgress({ current, total = 5 }: SectionProgressProps) {
-  const sectionTitles: Record<number, string> = {
-    1: "Processo Atual",
-    2: "Dores e Gargalos",
-    3: "Ferramentas",
-    4: "Uso de IA",
-    5: "Visão de Futuro",
-  };
+const defaultTitles: Record<number, string> = {
+  1: "Processo Atual",
+  2: "Dores e Gargalos",
+  3: "Ferramentas",
+  4: "Uso de IA",
+  5: "Visão de Futuro",
+};
+
+export function SectionProgress({ current, total = 5, titles }: SectionProgressProps) {
+  const sectionTitles = titles ?? defaultTitles;
 
   return (
     <div className="space-y-2">

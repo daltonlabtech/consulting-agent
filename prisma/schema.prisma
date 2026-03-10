@@ -44,6 +44,8 @@ model Entrevistado {
   area                 String
   whatsapp             String    @unique
 
+  tipo                 String    @default("operador") // "gestor" | "operador"
+
   status               String    @default("nao_iniciado")
   secao_atual          Int       @default(1)
   secoes_completadas   Int[]     @default([])
